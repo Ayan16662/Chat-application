@@ -1,30 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login");
+
+    try {
+      const result = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log(result.data);
+
+      if (result.data.success) {
+        navigate("/");
+      }
+
+    } catch (error) {
+      console.log(
+        error.response?.data?.message || "Login failed"
+      );
+    }
   };
 
   return (
     <div className="w-full min-h-screen bg-slate-200 flex items-center justify-center p-3">
 
-      {/* Card */}
       <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-xl overflow-hidden">
 
         {/* Header */}
         <div className="w-full h-[100px] bg-[#20c7ff] rounded-b-[25%] flex items-center justify-center">
-
           <h1 className="text-gray-700 font-bold text-[24px]">
             Welcome to{" "}
             <span className="text-white">
               Chatly
             </span>
           </h1>
-
         </div>
 
         {/* Content */}
@@ -38,7 +62,6 @@ const Login = () => {
             Welcome back! Please login to your account
           </p>
 
-          {/* Form */}
           <form
             onSubmit={handleLogin}
             className="flex flex-col gap-3"
@@ -46,91 +69,54 @@ const Login = () => {
 
             {/* Email */}
             <div>
-
               <label className="block text-xs font-medium text-gray-600 mb-1">
                 Email
               </label>
 
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email"
-                className="
-                  w-full h-10
-                  px-3
-                  text-sm
-                  border border-gray-300
-                  rounded-lg
-                  outline-none
-                  focus:border-[#20c7ff]
-                  focus:ring-1
-                  focus:ring-[#20c7ff]/30
-                "
+                required
+                className="w-full h-10 px-3 text-sm border border-gray-300 rounded-lg outline-none focus:border-[#20c7ff] focus:ring-1 focus:ring-[#20c7ff]/30"
               />
-
             </div>
 
             {/* Password */}
             <div>
-
               <label className="block text-xs font-medium text-gray-600 mb-1">
                 Password
               </label>
 
               <input
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
-                className="
-                  w-full h-10
-                  px-3
-                  text-sm
-                  border border-gray-300
-                  rounded-lg
-                  outline-none
-                  focus:border-[#20c7ff]
-                  focus:ring-1
-                  focus:ring-[#20c7ff]/30
-                "
+                required
+                className="w-full h-10 px-3 text-sm border border-gray-300 rounded-lg outline-none focus:border-[#20c7ff] focus:ring-1 focus:ring-[#20c7ff]/30"
               />
-
             </div>
 
-            {/* Login Button */}
             <button
               type="submit"
-              className="
-                w-full h-10
-                bg-[#20c7ff]
-                hover:bg-[#0bb5ed]
-                text-white
-                text-sm
-                font-semibold
-                rounded-lg
-                transition
-                cursor-pointer
-              "
+              className="w-full h-10 bg-[#20c7ff] hover:bg-[#0bb5ed] text-white text-sm font-semibold rounded-lg transition cursor-pointer"
             >
               Login
             </button>
 
           </form>
 
-          {/* Signup */}
           <p className="text-center text-gray-400 text-xs mt-4">
-
             Don't have an account?{" "}
 
             <span
               onClick={() => navigate("/signup")}
-              className="
-                text-[#20c7ff]
-                font-semibold
-                cursor-pointer
-                hover:underline
-              "
+              className="text-[#20c7ff] font-semibold cursor-pointer hover:underline"
             >
               Create Account
             </span>
-
           </p>
 
         </div>
