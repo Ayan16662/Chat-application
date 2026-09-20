@@ -8,10 +8,11 @@ import authRouter from "./src/routes/auth.routes.js";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
-
 const app = express();
 
+const PORT = process.env.PORT || 5000;
+
+// CORS
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -19,13 +20,19 @@ app.use(
   })
 );
 
+// Middlewares
 app.use(express.json());
+
 app.use(cookieParser());
 
+// Routes
 app.use("/api/auth", authRouter);
 
+// Start server
 app.listen(PORT, async () => {
   await connectDB();
 
-  console.log(`Server is running at ${PORT}`);
+  console.log(
+    `Server running on http://localhost:${PORT}`
+  );
 });
