@@ -7,7 +7,7 @@ import {
   getMe,
 } from "../controllers/auth.controller.js";
 
-import authMiddleware from "../middleware/auth.middleware.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
 
 const authRouter = express.Router();
 
@@ -17,16 +17,8 @@ authRouter.post("/signup", Signup);
 authRouter.post("/login", login);
 
 // Protected
-authRouter.get(
-  "/logout",
-  authMiddleware,
-  logout
-);
+authRouter.get("/logout", authMiddleware, logout);
 
-authRouter.get(
-  "/getMe",
-  authMiddleware,
-  getMe
-);
+authRouter.get("/getMe", authMiddleware, getMe);
 
 export default authRouter;
