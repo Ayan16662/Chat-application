@@ -1,15 +1,24 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+    setErr("");
 
     try {
       const result = await axios.post(
@@ -23,16 +32,28 @@ const Login = () => {
         }
       );
 
-      console.log(result.data);
+      console.log("Login response:", result.data);
 
       if (result.data.success) {
+        // Save logged-in user in Redux
+        dispatch(setUserData(result.data.user));
+
+        // Clear form
+        setEmail("");
+        setPassword("");
+
+        // Go to home/chat page
         navigate("/");
       }
-
     } catch (error) {
-      console.log(
-        error.response?.data?.message || "Login failed"
+      console.log("Login Error:", error);
+
+      setErr(
+        error.response?.data?.message ||
+          "Invalid email or password"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,6 +82,15 @@ const Login = () => {
           <p className="text-gray-400 text-xs text-center mt-1 mb-4">
             Welcome back! Please login to your account
           </p>
+
+          {/* Error */}
+          {err && (
+            <div className="mb-3 p-2 bg-red-100 border border-red-200 rounded-lg">
+              <p className="text-red-500 text-xs text-center">
+                {err}
+              </p>
+            </div>
+          )}
 
           <form
             onSubmit={handleLogin}
@@ -99,15 +129,18 @@ const Login = () => {
               />
             </div>
 
+            {/* Login Button */}
             <button
               type="submit"
-              className="w-full h-10 bg-[#20c7ff] hover:bg-[#0bb5ed] text-white text-sm font-semibold rounded-lg transition cursor-pointer"
+              disabled={loading}
+              className="w-full h-10 bg-[#20c7ff] hover:bg-[#0bb5ed] disabled:bg-gray-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer"
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
 
           </form>
 
+          {/* Signup */}
           <p className="text-center text-gray-400 text-xs mt-4">
             Don't have an account?{" "}
 

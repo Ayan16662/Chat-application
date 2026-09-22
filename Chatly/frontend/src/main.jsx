@@ -1,13 +1,19 @@
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
 
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import { BrowserRouter } from 'react-router-dom'
-export const serverUrl = "http://localhost:3000"
+import "./index.css";
+import App from "./App.jsx";
 
-createRoot(document.getElementById('root')).render(
- < BrowserRouter>
-    <App />
-   </BrowserRouter>
+import { store } from "./redux/store.js";
 
-)
+createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </BrowserRouter>
+  </React.StrictMode>
+);

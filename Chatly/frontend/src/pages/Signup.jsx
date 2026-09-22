@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../redux/userSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleGoogleAuth = () => {
     console.log("Google Auth");
@@ -15,6 +20,9 @@ const Signup = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+    setErr("");
 
     try {
       const result = await axios.post(
@@ -29,15 +37,29 @@ const Signup = () => {
         }
       );
 
-      console.log(result.data);
+      console.log("Signup response:", result.data);
 
       if (result.data.success) {
+        // Save user data in Redux
+        dispatch(setUserData(result.data.user));
+
+        // Clear form
+        setUsername("");
+        setEmail("");
+        setPassword("");
+
+        // Go to login
         navigate("/login");
       }
     } catch (error) {
-      console.log(
-        error.response?.data?.message || "Signup failed"
+      console.log("Signup Error:", error);
+
+      setErr(
+        error.response?.data?.message ||
+          "Signup failed. Please try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,6 +86,15 @@ const Signup = () => {
           <p className="text-gray-400 text-xs text-center mt-1 mb-4">
             Join Chatly and start chatting
           </p>
+
+          {/* Error */}
+          {err && (
+            <div className="mb-3 p-2 bg-red-100 border border-red-200 rounded-lg">
+              <p className="text-red-500 text-xs text-center">
+                {err}
+              </p>
+            </div>
+          )}
 
           <form
             onSubmit={handleSignup}
@@ -118,11 +149,13 @@ const Signup = () => {
               />
             </div>
 
+            {/* Signup Button */}
             <button
               type="submit"
-              className="w-full h-10 bg-[#20c7ff] hover:bg-[#0bb5ed] text-white text-sm font-semibold rounded-lg transition cursor-pointer"
+              disabled={loading}
+              className="w-full h-10 bg-[#20c7ff] hover:bg-[#0bb5ed] disabled:bg-gray-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer"
             >
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
 
           </form>
