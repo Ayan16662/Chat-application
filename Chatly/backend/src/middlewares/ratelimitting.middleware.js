@@ -30,5 +30,3 @@ const ratelimiting= (req, res, next) => {
     });
   }
 };
-
-export default ratelimiting;
