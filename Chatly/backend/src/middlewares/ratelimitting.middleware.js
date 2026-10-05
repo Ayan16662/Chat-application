@@ -22,7 +22,7 @@ const ratelimiting= (req, res, next) => {
   } catch (error) {
     console.log("Auth Middleware Error:", error);
     console.log(error);
-    console.log("kuch ni ")
+ 
 
     return res.status(401).json({
       success: false,

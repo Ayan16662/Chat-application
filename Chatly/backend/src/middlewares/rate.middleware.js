@@ -15,6 +15,7 @@ const authMiddleware = (req, res, next) => {
       token,
       process.env.JWT_SECRET
     );
+    console.log("hello")
 
     req.user = verifyToken;
 

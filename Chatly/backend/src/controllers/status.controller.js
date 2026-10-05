@@ -4,6 +4,7 @@ const controller = () => {
   return (
     <div>
       staus
+      kaisa hai
     </div>
   )
 }
