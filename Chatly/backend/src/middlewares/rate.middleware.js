@@ -11,11 +11,8 @@ const authMiddleware = (req, res, next) => {
       });
     }
 
-    const verifyToken = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
-    console.log("hello")
+   
+ 
 
     req.user = verifyToken;
 
